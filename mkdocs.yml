@@ -1,0 +1,13 @@
+site_name: PG Demo Showcase
+docs_dir: build/staging
+site_dir: build/site
+nav:
+  - Home: index.md
+  - Demos:
+      - Intro: demos/01_intro.md
+theme:
+  name: readthedocs
+markdown_extensions:
+  - tables
+  - admonition
+
