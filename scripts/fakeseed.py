@@ -1,7 +1,8 @@
 import random
 from typing import Dict, Any, List
 
-import pg8000
+import psycopg2
+from psycopg2.extras import execute_values
 import yaml
 from faker import Faker
 
@@ -78,19 +79,41 @@ def seed_fake_data(dbname: str, yaml_text: str, offline: bool = False) -> str:
         Faker.seed(seed)
         random.seed(seed)
 
-    conn = pg8000.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, database=dbname)
+    conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
-        conn.autocommit = True
+        # Use a single transaction for speed
+        conn.autocommit = False
         cur = conn.cursor()
         cache: Dict[str, List[Any]] = {}
         cols = list(fields.keys())
-        placeholders = ", ".join(["%s"] * len(cols))
         collist = ", ".join([f'"{c}"' for c in cols])
         print(f"Inserting {rows} fake row(s) into {table}...")
-        sql = f"INSERT INTO \"{table}\" ({collist}) VALUES ({placeholders})"
-        vals_list = [tuple(_generate_value(fields[c], fk, conn, cache) for c in cols) for _ in range(rows)]
-        cur.executemany(sql, vals_list)
+        insert_sql = f"INSERT INTO \"{table}\" ({collist}) VALUES %s"
+
+        # Generate rows in chunks to limit memory and speed up insertion
+        def _row_generator():
+            for _ in range(rows):
+                yield tuple(_generate_value(fields[c], fk, conn, cache) for c in cols)
+
+        def _chunked(iterable, size: int):
+            batch = []
+            for item in iterable:
+                batch.append(item)
+                if len(batch) >= size:
+                    yield batch
+                    batch = []
+            if batch:
+                yield batch
+
+        # Tuneable batch size; 1k is a solid default for execute_values
+        BATCH_SIZE = 1000
+        for chunk in _chunked(_row_generator(), BATCH_SIZE):
+            execute_values(cur, insert_sql, chunk, page_size=BATCH_SIZE)
         cur.close()
+        conn.commit()
         return f"> Inserted {rows} fake row(s) into {table}.\n"
+    except Exception:
+        conn.rollback()
+        raise
     finally:
         conn.close()

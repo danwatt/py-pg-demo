@@ -3,15 +3,14 @@ import time
 import shutil
 import subprocess
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
+from typing import List, Dict, Any
 import argparse
 import sys
 
-import pg8000
+import psycopg2
 import yaml
 
 from scripts.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT
-
 from scripts.chart import render_chart_from_results
 from scripts.fakeseed import seed_fake_data
 from scripts.mermaid import render_schema_mermaid
@@ -39,7 +38,7 @@ def ensure_postgres_is_up(timeout_seconds: int = 90) -> None:
     last_err = None
     while time.time() - start < timeout_seconds:
         try:
-            conn = pg8000.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, database="postgres")
+            conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname="postgres")
             conn.close()
             return
         except Exception as e:
@@ -75,7 +74,7 @@ def list_demo_dirs() -> List[Path]:
 def ensure_database(dbname: str, offline: bool = False) -> None:
     if offline:
         return
-    conn = pg8000.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, database="postgres")
+    conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname="postgres")
     try:
         conn.autocommit = True
         cur = conn.cursor()
@@ -295,3 +294,4 @@ if __name__ == "__main__":
         print("Building site...")
         build_site(offline=False)
         print(f"Done. Site at {SITE_DIR}")
+

@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-import pg8000
+import psycopg2
 
 from scripts.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT
 
@@ -27,7 +27,7 @@ def _map_pg_type_to_mermaid(pg_type: str) -> str:
 
 def render_schema_mermaid(dbname: str) -> str:
     # Introspect tables, columns, PKs, FKs from public schema and build a Mermaid ER diagram
-    conn = pg8000.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, database=dbname)
+    conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
         cur = conn.cursor()
         # Tables

@@ -3,7 +3,7 @@ import json
 import re
 from typing import Any, Dict, List, Tuple
 
-import pg8000
+import psycopg2  # switched from pg8000 to psycopg2
 
 from scripts.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT
 from scripts.sql import split_sql_statements
@@ -152,7 +152,7 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
     else:
         stmt = f"EXPLAIN (ANALYZE TRUE, FORMAT JSON, VERBOSE, COSTS) {stmt}"
 
-    conn = pg8000.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, database=dbname)
+    conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
         conn.autocommit = True
         cur = conn.cursor()
