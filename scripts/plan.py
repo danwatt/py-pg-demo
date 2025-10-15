@@ -36,17 +36,20 @@ def _node_label(n: Dict[str, Any]) -> str:
         head += f" on {rel}"
     rows = n.get("Plan Rows") if n.get("Plan Rows") is not None else n.get("Actual Rows")
     cost = n.get("Total Cost")
+    index = n.get("Index Name")
     parts = [head]
     if rows is not None:
         parts.append(f"rows={rows}")
     if cost is not None:
         parts.append(f"cost={_format_float(cost)}")
+    if index is not None:
+        parts.append(f"index={index}")
     return _mm_escape_label("\n".join(parts))
 
 
 def _build_flowchart(plan_root: Dict[str, Any], orientation: str = "LR") -> str:
     # Depth-first traversal to build nodes and edges
-    direction = orientation if orientation in {"TB", "TD", "LR", "RL"} else "LR"
+    direction = orientation if orientation in {"TB", "TD", "LR", "RL"} else "TB"
     lines: List[str] = [f"flowchart {direction}"]
     counter = [0]
 
@@ -150,7 +153,7 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
             opts = opts + ', ' + ', '.join(add_opts)
         stmt = f"EXPLAIN ({opts}) {body}"
     else:
-        stmt = f"EXPLAIN (ANALYZE TRUE, FORMAT JSON, VERBOSE, COSTS) {stmt}"
+        stmt = f"EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON) {stmt}"
 
     conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
@@ -178,7 +181,7 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
         plan_root = top.get("Plan") if isinstance(top, dict) else None
         if not isinstance(plan_root, dict):
             return f"<pre class=\"explain-text\">{json.dumps(plan_json, indent=2)}</pre>"
-        flow = _build_flowchart(plan_root, orientation="LR")
+        flow = _build_flowchart(plan_root, orientation="TB")
         pretty = json.dumps(plan_json, indent=2)
         return _render_tabs(flow, pretty)
     except Exception:

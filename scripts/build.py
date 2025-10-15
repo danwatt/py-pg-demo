@@ -159,6 +159,7 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
                         if offline:
                             snippets.append("> (Offline build: plan not generated)\n")
                         else:
+                            print(f"Executing explain plan block in {fp} against {dbname}: {block_text.splitlines()[0]}")
                             plan_html = render_explain_plan(dbname, block_text)
                             if plan_html:
                                 snippets.append(plan_html)

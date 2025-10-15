@@ -6,8 +6,14 @@ nav:
   - Demos:
       - Intro: demos/01_intro.md
 theme:
-  name: readthedocs
+  name: material
 markdown_extensions:
   - tables
   - admonition
-
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

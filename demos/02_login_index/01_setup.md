@@ -65,7 +65,7 @@ FROM generate_series(1,50);
 ```yaml
 seed: 42
 table: users
-rows: 5000
+rows: 50000
 fields:
   username:
     faker: ascii_free_email
