@@ -1,0 +1,12 @@
+# Example fakeseed file for the Intro demo
+seed: 42
+table: pets
+rows: 5
+fields:
+  person_id:
+    ref: { table: people, column: id }
+  name:
+    faker: first_name
+  species:
+    oneof: ["cat", "dog", "penguin"]
+

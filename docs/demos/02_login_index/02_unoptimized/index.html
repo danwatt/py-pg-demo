@@ -1,0 +1,2664 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../01_setup/">
+      
+      
+        <link rel="next" href="../../03_gin_index/01_setup/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+    
+    
+      
+        <title>Optimization - PG Demo Showcase</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2a3383ac.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#optimization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="PG Demo Showcase" class="md-header__button md-logo" aria-label="PG Demo Showcase" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PG Demo Showcase
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Optimization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="PG Demo Showcase" class="md-nav__button md-logo" aria-label="PG Demo Showcase" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PG Demo Showcase
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Intro
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Intro
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_intro/01_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_intro/02_query/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Query data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Login Index
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Login Index
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Optimization
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Optimization
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#backstory-continued" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backstory, continued
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-basic-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add basic indexes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-covering-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add Covering Indexes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Gin Index
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Gin Index
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_gin_index/01_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_gin_index/02_index_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Index Types
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Hash Index
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Hash Index
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_hash_index/01_setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#backstory-continued" class="md-nav__link">
+    <span class="md-ellipsis">
+      Backstory, continued
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-basic-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add basic indexes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-covering-indexes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add Covering Indexes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="optimization">Optimization</h1>
+<h2 id="backstory-continued">Backstory, continued</h2>
+<p>The query that you can see below is the one that was causing the load on the database.</p>
+<p>Through much troubleshooting, I was able to see that this query was called not directly
+by the user, but by a thread that was kicked off when the user logged in or refreshed their access.
+This thread was not directly visible in the default views in NewRelic, which were more focused
+on the web-facing request threads, not background threads.</p>
+<p>The purpose of this query was more for feeding data into another system, which isn't all that
+important for this demo. And, it should be noted that this other system did not really
+need to be fed data nearly as frequently as this setup was doing, but again, this was
+a system that was pretty much off limits for changing unless it was really necessary.</p>
+<p>It turns out adding indexes was a far easier solution than trying to optimize how the query was being used.</p>
+<p>The intent of the results from the query was to get the most recent session information for each
+device associated with the user. If a user was using their iPhone, their iPad, and their desktop,
+regardless of how many times they logged in, this should have produced 3 records. At
+least that was the intent - since the <code>user_agent</code> was part of the results, a singular
+device could have multiple user agents between different sessions, so in reality more than
+3 records would have been returned. Again, fixing that was off the table.</p>
+<!-- plan -->
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_agent</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">name</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="n">s</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">devices</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_id</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">         </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">device_types</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">device_type_id</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">username</span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;jillrhodes@hotmail.com&#39;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<details open><summary>Output</summary>
+
+<div class="plan-tabs"><style>.plan-tabs{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:0.4rem 0;background:#fff;}.plan-tabs .tab-bar{display:flex;border-bottom:1px solid #ddd;background:#f6f8fa;}.plan-tabs .tab{padding:6px 10px;cursor:pointer;font-size:.95em;border-right:1px solid #e5e5e5;user-select:none;}.plan-tabs .tab.active{background:#fff;font-weight:600;}.plan-tabs .tab-panel{display:none;padding:8px;}.plan-tabs .tab-panel.active{display:block;}.plan-tabs pre{white-space:pre-wrap;word-break:break-word;background:#fafafa;border:1px solid #eee;border-radius:4px;padding:8px;margin:0;}</style><div class="tab-bar">  <div class="tab active" data-tab="visual">Visual</div>  <div class="tab" data-tab="raw">Raw (JSON)</div></div><div class="panels">  <div class="panel visual"><div class="tab-panel active"><div class="mermaid">---
+config:
+  look: neo
+  theme: neo
+---
+flowchart TB
+n1["Unique<br/>rows=3810<br/>cost=17353.90"]
+n2["Gather Merge<br/>rows=3810<br/>cost=17315.80"]
+n3["Unique<br/>rows=1905<br/>cost=15876.00"]
+n4["Sort<br/>rows=1905<br/>cost=15856.95"]
+n5["Left Hash Join<br/>rows=1905<br/>cost=15748.41"]
+n6["Inner Nested Loop<br/>rows=1905<br/>cost=15704.81"]
+n7["Inner Hash Join<br/>rows=1905<br/>cost=15114.44"]
+n8["Seq Scan on sessions<br/>rows=380240<br/>cost=13210.40"]
+n7 --> n8
+n9["Hash<br/>rows=222<br/>cost=903.04"]
+n10["Seq Scan on users<br/>rows=222<br/>cost=903.04"]
+n9 --> n10
+n7 --> n9
+n6 --> n7
+n11["Index Scan on devices<br/>rows=1<br/>cost=0.31<br/>index=devices_pkey"]
+n6 --> n11
+n5 --> n6
+n12["Hash<br/>rows=1270<br/>cost=22.70"]
+n13["Seq Scan on device_types<br/>rows=1270<br/>cost=22.70"]
+n12 --> n13
+n5 --> n12
+n4 --> n5
+n3 --> n4
+n2 --> n3
+n1 --> n2
+linkStyle 0 stroke-width:8px
+linkStyle 1 stroke-width:1px
+linkStyle 2 stroke-width:1px
+linkStyle 3 stroke-width:9px
+linkStyle 4 stroke-width:1px
+linkStyle 5 stroke-width:9px
+linkStyle 6 stroke-width:1px
+linkStyle 7 stroke-width:1px
+linkStyle 8 stroke-width:9px
+linkStyle 9 stroke-width:9px
+linkStyle 10 stroke-width:9px
+linkStyle 11 stroke-width:10px</div></div></div>  <div class="panel raw"><div class="tab-panel"><pre>[
+  {
+    "Plan": {
+      "Node Type": "Unique",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 16852.22,
+      "Total Cost": 17353.9,
+      "Plan Rows": 3810,
+      "Plan Width": 76,
+      "Actual Startup Time": 22.281,
+      "Actual Total Time": 24.369,
+      "Actual Rows": 7,
+      "Actual Loops": 1,
+      "Output": [
+        "s.device_id",
+        "d.created_at",
+        "s.user_agent",
+        "dt.name"
+      ],
+      "Shared Hit Blocks": 10577,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Gather Merge",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 16852.22,
+          "Total Cost": 17315.8,
+          "Plan Rows": 3810,
+          "Plan Width": 76,
+          "Actual Startup Time": 22.281,
+          "Actual Total Time": 24.364,
+          "Actual Rows": 7,
+          "Actual Loops": 1,
+          "Output": [
+            "s.device_id",
+            "d.created_at",
+            "s.user_agent",
+            "dt.name"
+          ],
+          "Workers Planned": 2,
+          "Workers Launched": 2,
+          "Shared Hit Blocks": 10577,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Unique",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Startup Cost": 15852.19,
+              "Total Cost": 15876.0,
+              "Plan Rows": 1905,
+              "Plan Width": 76,
+              "Actual Startup Time": 19.692,
+              "Actual Total Time": 19.697,
+              "Actual Rows": 2,
+              "Actual Loops": 3,
+              "Output": [
+                "s.device_id",
+                "d.created_at",
+                "s.user_agent",
+                "dt.name"
+              ],
+              "Shared Hit Blocks": 10577,
+              "Shared Read Blocks": 0,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Workers": [
+                {
+                  "Worker Number": 0,
+                  "Actual Startup Time": 18.622,
+                  "Actual Total Time": 18.627,
+                  "Actual Rows": 1,
+                  "Actual Loops": 1,
+                  "Shared Hit Blocks": 3358,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0
+                },
+                {
+                  "Worker Number": 1,
+                  "Actual Startup Time": 18.625,
+                  "Actual Total Time": 18.632,
+                  "Actual Rows": 3,
+                  "Actual Loops": 1,
+                  "Shared Hit Blocks": 3444,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0
+                }
+              ],
+              "Plans": [
+                {
+                  "Node Type": "Sort",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Startup Cost": 15852.19,
+                  "Total Cost": 15856.95,
+                  "Plan Rows": 1905,
+                  "Plan Width": 76,
+                  "Actual Startup Time": 19.69,
+                  "Actual Total Time": 19.693,
+                  "Actual Rows": 2,
+                  "Actual Loops": 3,
+                  "Output": [
+                    "s.device_id",
+                    "d.created_at",
+                    "s.user_agent",
+                    "dt.name"
+                  ],
+                  "Sort Key": [
+                    "d.created_at DESC",
+                    "s.device_id",
+                    "s.user_agent",
+                    "dt.name"
+                  ],
+                  "Sort Method": "quicksort",
+                  "Sort Space Used": 25,
+                  "Sort Space Type": "Memory",
+                  "Shared Hit Blocks": 10577,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0,
+                  "Workers": [
+                    {
+                      "Worker Number": 0,
+                      "Actual Startup Time": 18.62,
+                      "Actual Total Time": 18.624,
+                      "Actual Rows": 1,
+                      "Actual Loops": 1,
+                      "Sort Method": "quicksort",
+                      "Sort Space Used": 25,
+                      "Sort Space Type": "Memory",
+                      "Shared Hit Blocks": 3358,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    },
+                    {
+                      "Worker Number": 1,
+                      "Actual Startup Time": 18.624,
+                      "Actual Total Time": 18.627,
+                      "Actual Rows": 3,
+                      "Actual Loops": 1,
+                      "Sort Method": "quicksort",
+                      "Sort Space Used": 25,
+                      "Sort Space Type": "Memory",
+                      "Shared Hit Blocks": 3444,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    }
+                  ],
+                  "Plans": [
+                    {
+                      "Node Type": "Hash Join",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Join Type": "Left",
+                      "Startup Cost": 944.68,
+                      "Total Cost": 15748.41,
+                      "Plan Rows": 1905,
+                      "Plan Width": 76,
+                      "Actual Startup Time": 8.434,
+                      "Actual Total Time": 19.65,
+                      "Actual Rows": 2,
+                      "Actual Loops": 3,
+                      "Output": [
+                        "s.device_id",
+                        "d.created_at",
+                        "s.user_agent",
+                        "dt.name"
+                      ],
+                      "Inner Unique": true,
+                      "Hash Cond": "(d.device_type_id = dt.id)",
+                      "Shared Hit Blocks": 10533,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0,
+                      "Workers": [
+                        {
+                          "Worker Number": 0,
+                          "Actual Startup Time": 8.659,
+                          "Actual Total Time": 18.584,
+                          "Actual Rows": 1,
+                          "Actual Loops": 1,
+                          "Shared Hit Blocks": 3336,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0
+                        },
+                        {
+                          "Worker Number": 1,
+                          "Actual Startup Time": 3.716,
+                          "Actual Total Time": 18.571,
+                          "Actual Rows": 3,
+                          "Actual Loops": 1,
+                          "Shared Hit Blocks": 3422,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0
+                        }
+                      ],
+                      "Plans": [
+                        {
+                          "Node Type": "Nested Loop",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Join Type": "Inner",
+                          "Startup Cost": 906.1,
+                          "Total Cost": 15704.81,
+                          "Plan Rows": 1905,
+                          "Plan Width": 48,
+                          "Actual Startup Time": 8.395,
+                          "Actual Total Time": 19.609,
+                          "Actual Rows": 2,
+                          "Actual Loops": 3,
+                          "Output": [
+                            "s.device_id",
+                            "s.user_agent",
+                            "d.created_at",
+                            "d.device_type_id"
+                          ],
+                          "Inner Unique": true,
+                          "Shared Hit Blocks": 10530,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0,
+                          "Workers": [
+                            {
+                              "Worker Number": 0,
+                              "Actual Startup Time": 8.608,
+                              "Actual Total Time": 18.532,
+                              "Actual Rows": 1,
+                              "Actual Loops": 1,
+                              "Shared Hit Blocks": 3335,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0
+                            },
+                            {
+                              "Worker Number": 1,
+                              "Actual Startup Time": 3.671,
+                              "Actual Total Time": 18.522,
+                              "Actual Rows": 3,
+                              "Actual Loops": 1,
+                              "Shared Hit Blocks": 3421,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0
+                            }
+                          ],
+                          "Plans": [
+                            {
+                              "Node Type": "Hash Join",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Async Capable": false,
+                              "Join Type": "Inner",
+                              "Startup Cost": 905.81,
+                              "Total Cost": 15114.44,
+                              "Plan Rows": 1905,
+                              "Plan Width": 36,
+                              "Actual Startup Time": 8.375,
+                              "Actual Total Time": 19.577,
+                              "Actual Rows": 2,
+                              "Actual Loops": 3,
+                              "Output": [
+                                "s.device_id",
+                                "s.user_agent"
+                              ],
+                              "Inner Unique": true,
+                              "Hash Cond": "(s.user_id = u.id)",
+                              "Shared Hit Blocks": 10507,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0,
+                              "Workers": [
+                                {
+                                  "Worker Number": 0,
+                                  "Actual Startup Time": 8.589,
+                                  "Actual Total Time": 18.512,
+                                  "Actual Rows": 1,
+                                  "Actual Loops": 1,
+                                  "Shared Hit Blocks": 3331,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                },
+                                {
+                                  "Worker Number": 1,
+                                  "Actual Startup Time": 3.65,
+                                  "Actual Total Time": 18.488,
+                                  "Actual Rows": 3,
+                                  "Actual Loops": 1,
+                                  "Shared Hit Blocks": 3411,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                }
+                              ],
+                              "Plans": [
+                                {
+                                  "Node Type": "Seq Scan",
+                                  "Parent Relationship": "Outer",
+                                  "Parallel Aware": true,
+                                  "Async Capable": false,
+                                  "Relation Name": "sessions",
+                                  "Schema": "public",
+                                  "Alias": "s",
+                                  "Startup Cost": 0.0,
+                                  "Total Cost": 13210.4,
+                                  "Plan Rows": 380240,
+                                  "Plan Width": 40,
+                                  "Actual Startup Time": 0.005,
+                                  "Actual Total Time": 10.2,
+                                  "Actual Rows": 144951,
+                                  "Actual Loops": 3,
+                                  "Output": [
+                                    "s.id",
+                                    "s.user_id",
+                                    "s.device_id",
+                                    "s.user_agent",
+                                    "s.created_at"
+                                  ],
+                                  "Shared Hit Blocks": 9408,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0,
+                                  "Workers": [
+                                    {
+                                      "Worker Number": 0,
+                                      "Actual Startup Time": 0.004,
+                                      "Actual Total Time": 9.676,
+                                      "Actual Rows": 136553,
+                                      "Actual Loops": 1,
+                                      "Shared Hit Blocks": 2956,
+                                      "Shared Read Blocks": 0,
+                                      "Shared Dirtied Blocks": 0,
+                                      "Shared Written Blocks": 0,
+                                      "Local Hit Blocks": 0,
+                                      "Local Read Blocks": 0,
+                                      "Local Dirtied Blocks": 0,
+                                      "Local Written Blocks": 0,
+                                      "Temp Read Blocks": 0,
+                                      "Temp Written Blocks": 0
+                                    },
+                                    {
+                                      "Worker Number": 1,
+                                      "Actual Startup Time": 0.004,
+                                      "Actual Total Time": 9.666,
+                                      "Actual Rows": 140340,
+                                      "Actual Loops": 1,
+                                      "Shared Hit Blocks": 3036,
+                                      "Shared Read Blocks": 0,
+                                      "Shared Dirtied Blocks": 0,
+                                      "Shared Written Blocks": 0,
+                                      "Local Hit Blocks": 0,
+                                      "Local Read Blocks": 0,
+                                      "Local Dirtied Blocks": 0,
+                                      "Local Written Blocks": 0,
+                                      "Temp Read Blocks": 0,
+                                      "Temp Written Blocks": 0
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Node Type": "Hash",
+                                  "Parent Relationship": "Inner",
+                                  "Parallel Aware": false,
+                                  "Async Capable": false,
+                                  "Startup Cost": 903.04,
+                                  "Total Cost": 903.04,
+                                  "Plan Rows": 222,
+                                  "Plan Width": 4,
+                                  "Actual Startup Time": 2.329,
+                                  "Actual Total Time": 2.329,
+                                  "Actual Rows": 1,
+                                  "Actual Loops": 3,
+                                  "Output": [
+                                    "u.id"
+                                  ],
+                                  "Hash Buckets": 1024,
+                                  "Original Hash Buckets": 1024,
+                                  "Hash Batches": 1,
+                                  "Original Hash Batches": 1,
+                                  "Peak Memory Usage": 9,
+                                  "Shared Hit Blocks": 1047,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0,
+                                  "Workers": [
+                                    {
+                                      "Worker Number": 0,
+                                      "Actual Startup Time": 2.184,
+                                      "Actual Total Time": 2.184,
+                                      "Actual Rows": 1,
+                                      "Actual Loops": 1,
+                                      "Shared Hit Blocks": 349,
+                                      "Shared Read Blocks": 0,
+                                      "Shared Dirtied Blocks": 0,
+                                      "Shared Written Blocks": 0,
+                                      "Local Hit Blocks": 0,
+                                      "Local Read Blocks": 0,
+                                      "Local Dirtied Blocks": 0,
+                                      "Local Written Blocks": 0,
+                                      "Temp Read Blocks": 0,
+                                      "Temp Written Blocks": 0
+                                    },
+                                    {
+                                      "Worker Number": 1,
+                                      "Actual Startup Time": 2.183,
+                                      "Actual Total Time": 2.184,
+                                      "Actual Rows": 1,
+                                      "Actual Loops": 1,
+                                      "Shared Hit Blocks": 349,
+                                      "Shared Read Blocks": 0,
+                                      "Shared Dirtied Blocks": 0,
+                                      "Shared Written Blocks": 0,
+                                      "Local Hit Blocks": 0,
+                                      "Local Read Blocks": 0,
+                                      "Local Dirtied Blocks": 0,
+                                      "Local Written Blocks": 0,
+                                      "Temp Read Blocks": 0,
+                                      "Temp Written Blocks": 0
+                                    }
+                                  ],
+                                  "Plans": [
+                                    {
+                                      "Node Type": "Seq Scan",
+                                      "Parent Relationship": "Outer",
+                                      "Parallel Aware": false,
+                                      "Async Capable": false,
+                                      "Relation Name": "users",
+                                      "Schema": "public",
+                                      "Alias": "u",
+                                      "Startup Cost": 0.0,
+                                      "Total Cost": 903.04,
+                                      "Plan Rows": 222,
+                                      "Plan Width": 4,
+                                      "Actual Startup Time": 0.013,
+                                      "Actual Total Time": 2.323,
+                                      "Actual Rows": 1,
+                                      "Actual Loops": 3,
+                                      "Output": [
+                                        "u.id"
+                                      ],
+                                      "Filter": "((u.username)::text = 'jillrhodes@hotmail.com'::text)",
+                                      "Rows Removed by Filter": 49999,
+                                      "Shared Hit Blocks": 1047,
+                                      "Shared Read Blocks": 0,
+                                      "Shared Dirtied Blocks": 0,
+                                      "Shared Written Blocks": 0,
+                                      "Local Hit Blocks": 0,
+                                      "Local Read Blocks": 0,
+                                      "Local Dirtied Blocks": 0,
+                                      "Local Written Blocks": 0,
+                                      "Temp Read Blocks": 0,
+                                      "Temp Written Blocks": 0,
+                                      "Workers": [
+                                        {
+                                          "Worker Number": 0,
+                                          "Actual Startup Time": 0.014,
+                                          "Actual Total Time": 2.179,
+                                          "Actual Rows": 1,
+                                          "Actual Loops": 1,
+                                          "Shared Hit Blocks": 349,
+                                          "Shared Read Blocks": 0,
+                                          "Shared Dirtied Blocks": 0,
+                                          "Shared Written Blocks": 0,
+                                          "Local Hit Blocks": 0,
+                                          "Local Read Blocks": 0,
+                                          "Local Dirtied Blocks": 0,
+                                          "Local Written Blocks": 0,
+                                          "Temp Read Blocks": 0,
+                                          "Temp Written Blocks": 0
+                                        },
+                                        {
+                                          "Worker Number": 1,
+                                          "Actual Startup Time": 0.015,
+                                          "Actual Total Time": 2.178,
+                                          "Actual Rows": 1,
+                                          "Actual Loops": 1,
+                                          "Shared Hit Blocks": 349,
+                                          "Shared Read Blocks": 0,
+                                          "Shared Dirtied Blocks": 0,
+                                          "Shared Written Blocks": 0,
+                                          "Local Hit Blocks": 0,
+                                          "Local Read Blocks": 0,
+                                          "Local Dirtied Blocks": 0,
+                                          "Local Written Blocks": 0,
+                                          "Temp Read Blocks": 0,
+                                          "Temp Written Blocks": 0
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Node Type": "Index Scan",
+                              "Parent Relationship": "Inner",
+                              "Parallel Aware": false,
+                              "Async Capable": false,
+                              "Scan Direction": "Forward",
+                              "Index Name": "devices_pkey",
+                              "Relation Name": "devices",
+                              "Schema": "public",
+                              "Alias": "d",
+                              "Startup Cost": 0.29,
+                              "Total Cost": 0.31,
+                              "Plan Rows": 1,
+                              "Plan Width": 16,
+                              "Actual Startup Time": 0.01,
+                              "Actual Total Time": 0.01,
+                              "Actual Rows": 1,
+                              "Actual Loops": 7,
+                              "Output": [
+                                "d.id",
+                                "d.user_id",
+                                "d.device_type_id",
+                                "d.created_at"
+                              ],
+                              "Index Cond": "(d.id = s.device_id)",
+                              "Rows Removed by Index Recheck": 0,
+                              "Shared Hit Blocks": 23,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0,
+                              "Workers": [
+                                {
+                                  "Worker Number": 0,
+                                  "Actual Startup Time": 0.016,
+                                  "Actual Total Time": 0.016,
+                                  "Actual Rows": 1,
+                                  "Actual Loops": 1,
+                                  "Shared Hit Blocks": 4,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                },
+                                {
+                                  "Worker Number": 1,
+                                  "Actual Startup Time": 0.008,
+                                  "Actual Total Time": 0.008,
+                                  "Actual Rows": 1,
+                                  "Actual Loops": 3,
+                                  "Shared Hit Blocks": 10,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "Node Type": "Hash",
+                          "Parent Relationship": "Inner",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Startup Cost": 22.7,
+                          "Total Cost": 22.7,
+                          "Plan Rows": 1270,
+                          "Plan Width": 36,
+                          "Actual Startup Time": 0.02,
+                          "Actual Total Time": 0.021,
+                          "Actual Rows": 7,
+                          "Actual Loops": 3,
+                          "Output": [
+                            "dt.name",
+                            "dt.id"
+                          ],
+                          "Hash Buckets": 2048,
+                          "Original Hash Buckets": 2048,
+                          "Hash Batches": 1,
+                          "Original Hash Batches": 1,
+                          "Peak Memory Usage": 17,
+                          "Shared Hit Blocks": 3,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0,
+                          "Workers": [
+                            {
+                              "Worker Number": 0,
+                              "Actual Startup Time": 0.028,
+                              "Actual Total Time": 0.028,
+                              "Actual Rows": 7,
+                              "Actual Loops": 1,
+                              "Shared Hit Blocks": 1,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0
+                            },
+                            {
+                              "Worker Number": 1,
+                              "Actual Startup Time": 0.026,
+                              "Actual Total Time": 0.026,
+                              "Actual Rows": 7,
+                              "Actual Loops": 1,
+                              "Shared Hit Blocks": 1,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0
+                            }
+                          ],
+                          "Plans": [
+                            {
+                              "Node Type": "Seq Scan",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Async Capable": false,
+                              "Relation Name": "device_types",
+                              "Schema": "public",
+                              "Alias": "dt",
+                              "Startup Cost": 0.0,
+                              "Total Cost": 22.7,
+                              "Plan Rows": 1270,
+                              "Plan Width": 36,
+                              "Actual Startup Time": 0.016,
+                              "Actual Total Time": 0.017,
+                              "Actual Rows": 7,
+                              "Actual Loops": 3,
+                              "Output": [
+                                "dt.name",
+                                "dt.id"
+                              ],
+                              "Shared Hit Blocks": 3,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0,
+                              "Workers": [
+                                {
+                                  "Worker Number": 0,
+                                  "Actual Startup Time": 0.024,
+                                  "Actual Total Time": 0.024,
+                                  "Actual Rows": 7,
+                                  "Actual Loops": 1,
+                                  "Shared Hit Blocks": 1,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                },
+                                {
+                                  "Worker Number": 1,
+                                  "Actual Startup Time": 0.021,
+                                  "Actual Total Time": 0.022,
+                                  "Actual Rows": 7,
+                                  "Actual Loops": 1,
+                                  "Shared Hit Blocks": 1,
+                                  "Shared Read Blocks": 0,
+                                  "Shared Dirtied Blocks": 0,
+                                  "Shared Written Blocks": 0,
+                                  "Local Hit Blocks": 0,
+                                  "Local Read Blocks": 0,
+                                  "Local Dirtied Blocks": 0,
+                                  "Local Written Blocks": 0,
+                                  "Temp Read Blocks": 0,
+                                  "Temp Written Blocks": 0
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 208,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.506,
+    "Triggers": [],
+    "Execution Time": 24.495
+  }
+]</pre></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script><script>(function(){
+  try { mermaid.initialize({ startOnLoad: true }); } catch (e) {}
+  var root = document.currentScript.previousElementSibling;
+  // Find nearest .plan-tabs (previous sibling may be the script tag)
+  while (root && !root.classList.contains('plan-tabs')) root = root.previousElementSibling;
+  if (!root) root = document.querySelector('.plan-tabs');
+  if (root) {
+    var tabs = root.querySelectorAll('.tab-bar .tab');
+    var visual = root.querySelector('.panel.visual .tab-panel');
+    var raw = root.querySelector('.panel.raw .tab-panel');
+    function activate(which) {
+      tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===which); });
+      if (which==='visual') { visual.classList.add('active'); raw.classList.remove('active'); try { mermaid.init(); } catch(e) {} }
+      else { raw.classList.add('active'); visual.classList.remove('active'); }
+    }
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t.dataset.tab); }); });
+  }
+})();</script>
+
+</details>
+
+<h2 id="add-basic-indexes">Add basic indexes</h2>
+<p>First, lets make sure we have indexes on any field that would be used as part of a foreign key
+or used directly in a where clause.</p>
+<p>This thankfully was more or less the state of the database when I started to work on improving it.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_sessions_device_id</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">sessions</span><span class="p">(</span><span class="n">device_id</span><span class="p">);</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_sessions_user_id</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">sessions</span><span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_devices_user_id</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">devices</span><span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_users_username</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">username</span><span class="p">);</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">vacuum</span><span class="w"> </span><span class="k">analyze</span><span class="p">;</span>
+</span></code></pre></div>
+<!-- plan -->
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_agent</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">name</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="n">s</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">devices</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_id</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">         </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">device_types</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">device_type_id</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">username</span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;jillrhodes@hotmail.com&#39;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<details open><summary>Output</summary>
+
+<div class="plan-tabs"><style>.plan-tabs{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:0.4rem 0;background:#fff;}.plan-tabs .tab-bar{display:flex;border-bottom:1px solid #ddd;background:#f6f8fa;}.plan-tabs .tab{padding:6px 10px;cursor:pointer;font-size:.95em;border-right:1px solid #e5e5e5;user-select:none;}.plan-tabs .tab.active{background:#fff;font-weight:600;}.plan-tabs .tab-panel{display:none;padding:8px;}.plan-tabs .tab-panel.active{display:block;}.plan-tabs pre{white-space:pre-wrap;word-break:break-word;background:#fafafa;border:1px solid #eee;border-radius:4px;padding:8px;margin:0;}</style><div class="tab-bar">  <div class="tab active" data-tab="visual">Visual</div>  <div class="tab" data-tab="raw">Raw (JSON)</div></div><div class="panels">  <div class="panel visual"><div class="tab-panel active"><div class="mermaid">---
+config:
+  look: neo
+  theme: neo
+---
+flowchart TB
+n1["Unique<br/>rows=9<br/>cost=63.76"]
+n2["Sort<br/>rows=9<br/>cost=63.67"]
+n3["Left Nested Loop<br/>rows=9<br/>cost=63.50"]
+n4["Inner Nested Loop<br/>rows=9<br/>cost=62.75"]
+n5["Inner Nested Loop<br/>rows=9<br/>cost=59.93"]
+n6["Index Scan on users<br/>rows=1<br/>cost=8.43<br/>index=ix_users_username"]
+n5 --> n6
+n7["Bitmap Heap Scan on sessions<br/>rows=12<br/>cost=51.38"]
+n8["Bitmap Index Scan<br/>rows=12<br/>cost=4.51<br/>index=ix_sessions_user_id"]
+n7 --> n8
+n5 --> n7
+n4 --> n5
+n9["Index Scan on devices<br/>rows=1<br/>cost=0.31<br/>index=devices_pkey"]
+n4 --> n9
+n3 --> n4
+n10["Memoize<br/>rows=1<br/>cost=0.16"]
+n11["Index Scan on device_types<br/>rows=1<br/>cost=0.15<br/>index=device_types_pkey"]
+n10 --> n11
+n3 --> n10
+n2 --> n3
+n1 --> n2
+linkStyle 0 stroke-width:2px
+linkStyle 1 stroke-width:2px
+linkStyle 2 stroke-width:8px
+linkStyle 3 stroke-width:9px
+linkStyle 4 stroke-width:1px
+linkStyle 5 stroke-width:10px
+linkStyle 6 stroke-width:1px
+linkStyle 7 stroke-width:1px
+linkStyle 8 stroke-width:10px
+linkStyle 9 stroke-width:10px</div></div></div>  <div class="panel raw"><div class="tab-panel"><pre>[
+  {
+    "Plan": {
+      "Node Type": "Unique",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 63.64,
+      "Total Cost": 63.76,
+      "Plan Rows": 9,
+      "Plan Width": 138,
+      "Actual Startup Time": 0.136,
+      "Actual Total Time": 0.141,
+      "Actual Rows": 7,
+      "Actual Loops": 1,
+      "Output": [
+        "s.device_id",
+        "d.created_at",
+        "s.user_agent",
+        "dt.name"
+      ],
+      "Shared Hit Blocks": 46,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 63.64,
+          "Total Cost": 63.67,
+          "Plan Rows": 9,
+          "Plan Width": 138,
+          "Actual Startup Time": 0.136,
+          "Actual Total Time": 0.137,
+          "Actual Rows": 7,
+          "Actual Loops": 1,
+          "Output": [
+            "s.device_id",
+            "d.created_at",
+            "s.user_agent",
+            "dt.name"
+          ],
+          "Sort Key": [
+            "d.created_at DESC",
+            "s.device_id",
+            "s.user_agent",
+            "dt.name"
+          ],
+          "Sort Method": "quicksort",
+          "Sort Space Used": 26,
+          "Sort Space Type": "Memory",
+          "Shared Hit Blocks": 46,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Nested Loop",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Join Type": "Left",
+              "Startup Cost": 5.36,
+              "Total Cost": 63.5,
+              "Plan Rows": 9,
+              "Plan Width": 138,
+              "Actual Startup Time": 0.071,
+              "Actual Total Time": 0.108,
+              "Actual Rows": 7,
+              "Actual Loops": 1,
+              "Output": [
+                "s.device_id",
+                "d.created_at",
+                "s.user_agent",
+                "dt.name"
+              ],
+              "Inner Unique": true,
+              "Shared Hit Blocks": 37,
+              "Shared Read Blocks": 0,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 0,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Plans": [
+                {
+                  "Node Type": "Nested Loop",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Join Type": "Inner",
+                  "Startup Cost": 5.22,
+                  "Total Cost": 62.75,
+                  "Plan Rows": 9,
+                  "Plan Width": 135,
+                  "Actual Startup Time": 0.061,
+                  "Actual Total Time": 0.095,
+                  "Actual Rows": 7,
+                  "Actual Loops": 1,
+                  "Output": [
+                    "s.device_id",
+                    "s.user_agent",
+                    "d.created_at",
+                    "d.device_type_id"
+                  ],
+                  "Inner Unique": true,
+                  "Shared Hit Blocks": 35,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0,
+                  "Plans": [
+                    {
+                      "Node Type": "Nested Loop",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Join Type": "Inner",
+                      "Startup Cost": 4.93,
+                      "Total Cost": 59.93,
+                      "Plan Rows": 9,
+                      "Plan Width": 123,
+                      "Actual Startup Time": 0.047,
+                      "Actual Total Time": 0.075,
+                      "Actual Rows": 7,
+                      "Actual Loops": 1,
+                      "Output": [
+                        "s.device_id",
+                        "s.user_agent"
+                      ],
+                      "Inner Unique": false,
+                      "Shared Hit Blocks": 14,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0,
+                      "Plans": [
+                        {
+                          "Node Type": "Index Scan",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Scan Direction": "Forward",
+                          "Index Name": "ix_users_username",
+                          "Relation Name": "users",
+                          "Schema": "public",
+                          "Alias": "u",
+                          "Startup Cost": 0.41,
+                          "Total Cost": 8.43,
+                          "Plan Rows": 1,
+                          "Plan Width": 4,
+                          "Actual Startup Time": 0.029,
+                          "Actual Total Time": 0.029,
+                          "Actual Rows": 1,
+                          "Actual Loops": 1,
+                          "Output": [
+                            "u.id",
+                            "u.username"
+                          ],
+                          "Index Cond": "((u.username)::text = 'jillrhodes@hotmail.com'::text)",
+                          "Rows Removed by Index Recheck": 0,
+                          "Shared Hit Blocks": 4,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0
+                        },
+                        {
+                          "Node Type": "Bitmap Heap Scan",
+                          "Parent Relationship": "Inner",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Relation Name": "sessions",
+                          "Schema": "public",
+                          "Alias": "s",
+                          "Startup Cost": 4.52,
+                          "Total Cost": 51.38,
+                          "Plan Rows": 12,
+                          "Plan Width": 127,
+                          "Actual Startup Time": 0.016,
+                          "Actual Total Time": 0.042,
+                          "Actual Rows": 7,
+                          "Actual Loops": 1,
+                          "Output": [
+                            "s.id",
+                            "s.user_id",
+                            "s.device_id",
+                            "s.user_agent",
+                            "s.created_at"
+                          ],
+                          "Recheck Cond": "(s.user_id = u.id)",
+                          "Rows Removed by Index Recheck": 0,
+                          "Exact Heap Blocks": 7,
+                          "Lossy Heap Blocks": 0,
+                          "Shared Hit Blocks": 10,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0,
+                          "Plans": [
+                            {
+                              "Node Type": "Bitmap Index Scan",
+                              "Parent Relationship": "Outer",
+                              "Parallel Aware": false,
+                              "Async Capable": false,
+                              "Index Name": "ix_sessions_user_id",
+                              "Startup Cost": 0.0,
+                              "Total Cost": 4.51,
+                              "Plan Rows": 12,
+                              "Plan Width": 0,
+                              "Actual Startup Time": 0.007,
+                              "Actual Total Time": 0.007,
+                              "Actual Rows": 7,
+                              "Actual Loops": 1,
+                              "Index Cond": "(s.user_id = u.id)",
+                              "Shared Hit Blocks": 3,
+                              "Shared Read Blocks": 0,
+                              "Shared Dirtied Blocks": 0,
+                              "Shared Written Blocks": 0,
+                              "Local Hit Blocks": 0,
+                              "Local Read Blocks": 0,
+                              "Local Dirtied Blocks": 0,
+                              "Local Written Blocks": 0,
+                              "Temp Read Blocks": 0,
+                              "Temp Written Blocks": 0
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "Node Type": "Index Scan",
+                      "Parent Relationship": "Inner",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Scan Direction": "Forward",
+                      "Index Name": "devices_pkey",
+                      "Relation Name": "devices",
+                      "Schema": "public",
+                      "Alias": "d",
+                      "Startup Cost": 0.29,
+                      "Total Cost": 0.31,
+                      "Plan Rows": 1,
+                      "Plan Width": 16,
+                      "Actual Startup Time": 0.002,
+                      "Actual Total Time": 0.002,
+                      "Actual Rows": 1,
+                      "Actual Loops": 7,
+                      "Output": [
+                        "d.id",
+                        "d.user_id",
+                        "d.device_type_id",
+                        "d.created_at"
+                      ],
+                      "Index Cond": "(d.id = s.device_id)",
+                      "Rows Removed by Index Recheck": 0,
+                      "Shared Hit Blocks": 21,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    }
+                  ]
+                },
+                {
+                  "Node Type": "Memoize",
+                  "Parent Relationship": "Inner",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Startup Cost": 0.14,
+                  "Total Cost": 0.16,
+                  "Plan Rows": 1,
+                  "Plan Width": 11,
+                  "Actual Startup Time": 0.002,
+                  "Actual Total Time": 0.002,
+                  "Actual Rows": 1,
+                  "Actual Loops": 7,
+                  "Output": [
+                    "dt.name",
+                    "dt.id"
+                  ],
+                  "Cache Key": "d.device_type_id",
+                  "Cache Mode": "logical",
+                  "Cache Hits": 6,
+                  "Cache Misses": 1,
+                  "Cache Evictions": 0,
+                  "Cache Overflows": 0,
+                  "Peak Memory Usage": 1,
+                  "Shared Hit Blocks": 2,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0,
+                  "Plans": [
+                    {
+                      "Node Type": "Index Scan",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Scan Direction": "Forward",
+                      "Index Name": "device_types_pkey",
+                      "Relation Name": "device_types",
+                      "Schema": "public",
+                      "Alias": "dt",
+                      "Startup Cost": 0.13,
+                      "Total Cost": 0.15,
+                      "Plan Rows": 1,
+                      "Plan Width": 11,
+                      "Actual Startup Time": 0.005,
+                      "Actual Total Time": 0.005,
+                      "Actual Rows": 1,
+                      "Actual Loops": 1,
+                      "Output": [
+                        "dt.name",
+                        "dt.id"
+                      ],
+                      "Index Cond": "(dt.id = d.device_type_id)",
+                      "Rows Removed by Index Recheck": 0,
+                      "Shared Hit Blocks": 2,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 290,
+      "Shared Read Blocks": 2,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.652,
+    "Triggers": [],
+    "Execution Time": 0.213
+  }
+]</pre></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script><script>(function(){
+  try { mermaid.initialize({ startOnLoad: true }); } catch (e) {}
+  var root = document.currentScript.previousElementSibling;
+  // Find nearest .plan-tabs (previous sibling may be the script tag)
+  while (root && !root.classList.contains('plan-tabs')) root = root.previousElementSibling;
+  if (!root) root = document.querySelector('.plan-tabs');
+  if (root) {
+    var tabs = root.querySelectorAll('.tab-bar .tab');
+    var visual = root.querySelector('.panel.visual .tab-panel');
+    var raw = root.querySelector('.panel.raw .tab-panel');
+    function activate(which) {
+      tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===which); });
+      if (which==='visual') { visual.classList.add('active'); raw.classList.remove('active'); try { mermaid.init(); } catch(e) {} }
+      else { raw.classList.add('active'); visual.classList.remove('active'); }
+    }
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t.dataset.tab); }); });
+  }
+})();</script>
+
+</details>
+
+<p>This isnt too bad, the cost is only in the 60's, far better than the 17,000 without any
+reasonable indexes. We have three index scans, and one bitmap index scan, and no seq scans (ie: full table scans).</p>
+<p>But, this query is happening thousands of times per minute, and on very large tables.
+This is causing the database to be very busy reading from disk. Even with 4 scans using indexes,
+the database still has to go back to the much larger base tables to get some data.</p>
+<p>We can do better.</p>
+<h2 id="add-covering-indexes">Add Covering Indexes</h2>
+<p>A covering index is a regular index that provides all the data required for a query without
+having to access the full table. This includes columns used in a where clause, a join, or
+returned by a select statement.</p>
+<p>If we can make good covering indexes, index scans and bitmap index scans can become "index only scans".</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_users_cover</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="p">(</span><span class="n">username</span><span class="p">)</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_sessions_cover</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="p">(</span><span class="n">device_id</span><span class="p">,</span><span class="w"> </span><span class="n">user_agent</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">create</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="n">concurrently</span><span class="w"> </span><span class="n">ix_devices_cover</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">devices</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="k">ASC</span><span class="p">,</span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">)</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="p">(</span><span class="n">device_type_id</span><span class="p">,</span><span class="n">created_at</span><span class="p">);</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">vacuum</span><span class="w"> </span><span class="k">analyze</span><span class="p">;</span>
+</span></code></pre></div>
+<p>When this </p>
+<!-- plan -->
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_agent</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">name</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">FROM</span><span class="w"> </span><span class="n">sessions</span><span class="w"> </span><span class="n">s</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">devices</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">device_id</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">         </span><span class="k">JOIN</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">user_id</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">         </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">device_types</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">dt</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">device_type_id</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">username</span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;jillrhodes@hotmail.com&#39;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">created_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<details open><summary>Output</summary>
+
+<div class="plan-tabs"><style>.plan-tabs{border:1px solid #ddd;border-radius:6px;overflow:hidden;margin:0.4rem 0;background:#fff;}.plan-tabs .tab-bar{display:flex;border-bottom:1px solid #ddd;background:#f6f8fa;}.plan-tabs .tab{padding:6px 10px;cursor:pointer;font-size:.95em;border-right:1px solid #e5e5e5;user-select:none;}.plan-tabs .tab.active{background:#fff;font-weight:600;}.plan-tabs .tab-panel{display:none;padding:8px;}.plan-tabs .tab-panel.active{display:block;}.plan-tabs pre{white-space:pre-wrap;word-break:break-word;background:#fafafa;border:1px solid #eee;border-radius:4px;padding:8px;margin:0;}</style><div class="tab-bar">  <div class="tab active" data-tab="visual">Visual</div>  <div class="tab" data-tab="raw">Raw (JSON)</div></div><div class="panels">  <div class="panel visual"><div class="tab-panel active"><div class="mermaid">---
+config:
+  look: neo
+  theme: neo
+---
+flowchart TB
+n1["Unique<br/>rows=9<br/>cost=13.01"]
+n2["Sort<br/>rows=9<br/>cost=12.92"]
+n3["Left Nested Loop<br/>rows=9<br/>cost=12.75"]
+n4["Inner Nested Loop<br/>rows=9<br/>cost=12.00"]
+n5["Inner Nested Loop<br/>rows=9<br/>cost=9.18"]
+n6["Index Only Scan on users<br/>rows=1<br/>cost=4.43<br/>index=ix_users_cover"]
+n5 --> n6
+n7["Index Only Scan on sessions<br/>rows=12<br/>cost=4.63<br/>index=ix_sessions_cover"]
+n5 --> n7
+n4 --> n5
+n8["Index Scan on devices<br/>rows=1<br/>cost=0.31<br/>index=devices_pkey"]
+n4 --> n8
+n3 --> n4
+n9["Memoize<br/>rows=1<br/>cost=0.16"]
+n10["Index Scan on device_types<br/>rows=1<br/>cost=0.15<br/>index=device_types_pkey"]
+n9 --> n10
+n3 --> n9
+n2 --> n3
+n1 --> n2
+linkStyle 0 stroke-width:4px
+linkStyle 1 stroke-width:4px
+linkStyle 2 stroke-width:7px
+linkStyle 3 stroke-width:1px
+linkStyle 4 stroke-width:9px
+linkStyle 5 stroke-width:1px
+linkStyle 6 stroke-width:1px
+linkStyle 7 stroke-width:10px
+linkStyle 8 stroke-width:10px</div></div></div>  <div class="panel raw"><div class="tab-panel"><pre>[
+  {
+    "Plan": {
+      "Node Type": "Unique",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 12.9,
+      "Total Cost": 13.01,
+      "Plan Rows": 9,
+      "Plan Width": 137,
+      "Actual Startup Time": 0.094,
+      "Actual Total Time": 0.097,
+      "Actual Rows": 7,
+      "Actual Loops": 1,
+      "Output": [
+        "s.device_id",
+        "d.created_at",
+        "s.user_agent",
+        "dt.name"
+      ],
+      "Shared Hit Blocks": 37,
+      "Shared Read Blocks": 3,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 3,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 12.9,
+          "Total Cost": 12.92,
+          "Plan Rows": 9,
+          "Plan Width": 137,
+          "Actual Startup Time": 0.093,
+          "Actual Total Time": 0.094,
+          "Actual Rows": 7,
+          "Actual Loops": 1,
+          "Output": [
+            "s.device_id",
+            "d.created_at",
+            "s.user_agent",
+            "dt.name"
+          ],
+          "Sort Key": [
+            "d.created_at DESC",
+            "s.device_id",
+            "s.user_agent",
+            "dt.name"
+          ],
+          "Sort Method": "quicksort",
+          "Sort Space Used": 26,
+          "Sort Space Type": "Memory",
+          "Shared Hit Blocks": 37,
+          "Shared Read Blocks": 3,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 3,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0,
+          "Plans": [
+            {
+              "Node Type": "Nested Loop",
+              "Parent Relationship": "Outer",
+              "Parallel Aware": false,
+              "Async Capable": false,
+              "Join Type": "Left",
+              "Startup Cost": 1.27,
+              "Total Cost": 12.75,
+              "Plan Rows": 9,
+              "Plan Width": 137,
+              "Actual Startup Time": 0.057,
+              "Actual Total Time": 0.067,
+              "Actual Rows": 7,
+              "Actual Loops": 1,
+              "Output": [
+                "s.device_id",
+                "d.created_at",
+                "s.user_agent",
+                "dt.name"
+              ],
+              "Inner Unique": true,
+              "Shared Hit Blocks": 28,
+              "Shared Read Blocks": 3,
+              "Shared Dirtied Blocks": 0,
+              "Shared Written Blocks": 3,
+              "Local Hit Blocks": 0,
+              "Local Read Blocks": 0,
+              "Local Dirtied Blocks": 0,
+              "Local Written Blocks": 0,
+              "Temp Read Blocks": 0,
+              "Temp Written Blocks": 0,
+              "Plans": [
+                {
+                  "Node Type": "Nested Loop",
+                  "Parent Relationship": "Outer",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Join Type": "Inner",
+                  "Startup Cost": 1.13,
+                  "Total Cost": 12.0,
+                  "Plan Rows": 9,
+                  "Plan Width": 134,
+                  "Actual Startup Time": 0.048,
+                  "Actual Total Time": 0.056,
+                  "Actual Rows": 7,
+                  "Actual Loops": 1,
+                  "Output": [
+                    "s.device_id",
+                    "s.user_agent",
+                    "d.created_at",
+                    "d.device_type_id"
+                  ],
+                  "Inner Unique": true,
+                  "Shared Hit Blocks": 26,
+                  "Shared Read Blocks": 3,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 3,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0,
+                  "Plans": [
+                    {
+                      "Node Type": "Nested Loop",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Join Type": "Inner",
+                      "Startup Cost": 0.84,
+                      "Total Cost": 9.18,
+                      "Plan Rows": 9,
+                      "Plan Width": 122,
+                      "Actual Startup Time": 0.035,
+                      "Actual Total Time": 0.037,
+                      "Actual Rows": 7,
+                      "Actual Loops": 1,
+                      "Output": [
+                        "s.device_id",
+                        "s.user_agent"
+                      ],
+                      "Inner Unique": false,
+                      "Shared Hit Blocks": 5,
+                      "Shared Read Blocks": 3,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 3,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0,
+                      "Plans": [
+                        {
+                          "Node Type": "Index Only Scan",
+                          "Parent Relationship": "Outer",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Scan Direction": "Forward",
+                          "Index Name": "ix_users_cover",
+                          "Relation Name": "users",
+                          "Schema": "public",
+                          "Alias": "u",
+                          "Startup Cost": 0.41,
+                          "Total Cost": 4.43,
+                          "Plan Rows": 1,
+                          "Plan Width": 4,
+                          "Actual Startup Time": 0.028,
+                          "Actual Total Time": 0.028,
+                          "Actual Rows": 1,
+                          "Actual Loops": 1,
+                          "Output": [
+                            "u.username",
+                            "u.id"
+                          ],
+                          "Index Cond": "(u.username = 'jillrhodes@hotmail.com'::text)",
+                          "Rows Removed by Index Recheck": 0,
+                          "Heap Fetches": 0,
+                          "Shared Hit Blocks": 1,
+                          "Shared Read Blocks": 3,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 3,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0
+                        },
+                        {
+                          "Node Type": "Index Only Scan",
+                          "Parent Relationship": "Inner",
+                          "Parallel Aware": false,
+                          "Async Capable": false,
+                          "Scan Direction": "Forward",
+                          "Index Name": "ix_sessions_cover",
+                          "Relation Name": "sessions",
+                          "Schema": "public",
+                          "Alias": "s",
+                          "Startup Cost": 0.42,
+                          "Total Cost": 4.63,
+                          "Plan Rows": 12,
+                          "Plan Width": 126,
+                          "Actual Startup Time": 0.006,
+                          "Actual Total Time": 0.007,
+                          "Actual Rows": 7,
+                          "Actual Loops": 1,
+                          "Output": [
+                            "s.user_id",
+                            "s.device_id",
+                            "s.user_agent"
+                          ],
+                          "Index Cond": "(s.user_id = u.id)",
+                          "Rows Removed by Index Recheck": 0,
+                          "Heap Fetches": 0,
+                          "Shared Hit Blocks": 4,
+                          "Shared Read Blocks": 0,
+                          "Shared Dirtied Blocks": 0,
+                          "Shared Written Blocks": 0,
+                          "Local Hit Blocks": 0,
+                          "Local Read Blocks": 0,
+                          "Local Dirtied Blocks": 0,
+                          "Local Written Blocks": 0,
+                          "Temp Read Blocks": 0,
+                          "Temp Written Blocks": 0
+                        }
+                      ]
+                    },
+                    {
+                      "Node Type": "Index Scan",
+                      "Parent Relationship": "Inner",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Scan Direction": "Forward",
+                      "Index Name": "devices_pkey",
+                      "Relation Name": "devices",
+                      "Schema": "public",
+                      "Alias": "d",
+                      "Startup Cost": 0.29,
+                      "Total Cost": 0.31,
+                      "Plan Rows": 1,
+                      "Plan Width": 16,
+                      "Actual Startup Time": 0.002,
+                      "Actual Total Time": 0.002,
+                      "Actual Rows": 1,
+                      "Actual Loops": 7,
+                      "Output": [
+                        "d.id",
+                        "d.user_id",
+                        "d.device_type_id",
+                        "d.created_at"
+                      ],
+                      "Index Cond": "(d.id = s.device_id)",
+                      "Rows Removed by Index Recheck": 0,
+                      "Shared Hit Blocks": 21,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    }
+                  ]
+                },
+                {
+                  "Node Type": "Memoize",
+                  "Parent Relationship": "Inner",
+                  "Parallel Aware": false,
+                  "Async Capable": false,
+                  "Startup Cost": 0.14,
+                  "Total Cost": 0.16,
+                  "Plan Rows": 1,
+                  "Plan Width": 11,
+                  "Actual Startup Time": 0.001,
+                  "Actual Total Time": 0.001,
+                  "Actual Rows": 1,
+                  "Actual Loops": 7,
+                  "Output": [
+                    "dt.name",
+                    "dt.id"
+                  ],
+                  "Cache Key": "d.device_type_id",
+                  "Cache Mode": "logical",
+                  "Cache Hits": 6,
+                  "Cache Misses": 1,
+                  "Cache Evictions": 0,
+                  "Cache Overflows": 0,
+                  "Peak Memory Usage": 1,
+                  "Shared Hit Blocks": 2,
+                  "Shared Read Blocks": 0,
+                  "Shared Dirtied Blocks": 0,
+                  "Shared Written Blocks": 0,
+                  "Local Hit Blocks": 0,
+                  "Local Read Blocks": 0,
+                  "Local Dirtied Blocks": 0,
+                  "Local Written Blocks": 0,
+                  "Temp Read Blocks": 0,
+                  "Temp Written Blocks": 0,
+                  "Plans": [
+                    {
+                      "Node Type": "Index Scan",
+                      "Parent Relationship": "Outer",
+                      "Parallel Aware": false,
+                      "Async Capable": false,
+                      "Scan Direction": "Forward",
+                      "Index Name": "device_types_pkey",
+                      "Relation Name": "device_types",
+                      "Schema": "public",
+                      "Alias": "dt",
+                      "Startup Cost": 0.13,
+                      "Total Cost": 0.15,
+                      "Plan Rows": 1,
+                      "Plan Width": 11,
+                      "Actual Startup Time": 0.004,
+                      "Actual Total Time": 0.004,
+                      "Actual Rows": 1,
+                      "Actual Loops": 1,
+                      "Output": [
+                        "dt.name",
+                        "dt.id"
+                      ],
+                      "Index Cond": "(dt.id = d.device_type_id)",
+                      "Rows Removed by Index Recheck": 0,
+                      "Shared Hit Blocks": 2,
+                      "Shared Read Blocks": 0,
+                      "Shared Dirtied Blocks": 0,
+                      "Shared Written Blocks": 0,
+                      "Local Hit Blocks": 0,
+                      "Local Read Blocks": 0,
+                      "Local Dirtied Blocks": 0,
+                      "Local Written Blocks": 0,
+                      "Temp Read Blocks": 0,
+                      "Temp Written Blocks": 0
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 347,
+      "Shared Read Blocks": 8,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 5,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.787,
+    "Triggers": [],
+    "Execution Time": 0.166
+  }
+]</pre></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script><script>(function(){
+  try { mermaid.initialize({ startOnLoad: true }); } catch (e) {}
+  var root = document.currentScript.previousElementSibling;
+  // Find nearest .plan-tabs (previous sibling may be the script tag)
+  while (root && !root.classList.contains('plan-tabs')) root = root.previousElementSibling;
+  if (!root) root = document.querySelector('.plan-tabs');
+  if (root) {
+    var tabs = root.querySelectorAll('.tab-bar .tab');
+    var visual = root.querySelector('.panel.visual .tab-panel');
+    var raw = root.querySelector('.panel.raw .tab-panel');
+    function activate(which) {
+      tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===which); });
+      if (which==='visual') { visual.classList.add('active'); raw.classList.remove('active'); try { mermaid.init(); } catch(e) {} }
+      else { raw.classList.add('active'); visual.classList.remove('active'); }
+    }
+    tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t.dataset.tab); }); });
+  }
+})();</script>
+
+</details>
+
+<p>You can see the results of this from a screenshot taken from Performance Insights in RDS. The orange bars
+that are clearly visible on the left half of the chart suddenly went away when the index was created. The
+other colored bars are the rest of the queries that were on this instance, and it should be clear to see
+that this one query type accounted for a significant portion of the overall load until the index was added.</p>
+<p><img alt="Query Improvement" src="../img.png" /></p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">SELECT</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="n">relname</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">object_name</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">pg_size_pretty</span><span class="p">(</span><span class="n">pg_total_relation_size</span><span class="p">(</span><span class="n">pg_class</span><span class="p">.</span><span class="n">oid</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_size</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">FROM</span><span class="w"> </span><span class="n">pg_class</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">pg_namespace</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pg_namespace</span><span class="p">.</span><span class="n">oid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pg_class</span><span class="p">.</span><span class="n">relnamespace</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">pg_namespace</span><span class="p">.</span><span class="n">nspname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_schema</span><span class="p">()</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">relkind</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_size</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</span></code></pre></div>
+<details open><summary>Output</summary>
+
+
+
+<div class="sql-output">
+<table>
+<thead><tr><th>object_name</th><th>total_size</th></tr></thead>
+<tbody><tr><td>sessions_pkey</td><td>9560 kB</td></tr><tr><td>devices</td><td>8568 kB</td></tr><tr><td>users</td><td>8176 kB</td></tr><tr><td>ix_sessions_cover</td><td>67 MB</td></tr><tr><td>device_types</td><td>64 kB</td></tr><tr><td>temp_user_agents</td><td>64 kB</td></tr><tr><td>ix_sessions_device_id</td><td>4376 kB</td></tr><tr><td>ix_sessions_user_id</td><td>3856 kB</td></tr><tr><td>ix_devices_cover</td><td>2928 kB</td></tr><tr><td>ix_users_cover</td><td>2264 kB</td></tr><tr><td>ix_users_username</td><td>1968 kB</td></tr><tr><td>temp_user_agents_pkey</td><td>16 kB</td></tr><tr><td>device_types_pkey</td><td>16 kB</td></tr><tr><td>sessions</td><td>158 MB</td></tr><tr><td>devices_pkey</td><td>1328 kB</td></tr><tr><td>ix_devices_user_id</td><td>1216 kB</td></tr><tr><td>users_pkey</td><td>1112 kB</td></tr></tbody>
+</table>
+</div>
+
+
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
