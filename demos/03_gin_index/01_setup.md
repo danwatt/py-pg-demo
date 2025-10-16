@@ -30,7 +30,7 @@ create index ix_user_lower on users(lower(username));
 ```yaml
 seed: 42
 table: users
-rows: 50000
+rows: 10000
 fields:
   username:
     unique: true

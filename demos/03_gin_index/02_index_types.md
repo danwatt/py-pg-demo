@@ -34,7 +34,7 @@ this starts to get slow:
 
 <!-- plan -->
 ```sql
-select count(username) from users where lower(username) like '%watt%';
+select * from users where lower(username) like '%watt%';
 ```
 
 ## Enter the GIN index
@@ -46,13 +46,19 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 create index concurrently if not exists ix_users_email_gin
     on users using gin (lower(username) gin_trgm_ops);
 
-create index concurrently if not exists ix_users_email_gist
-    on users using gist (lower(username) gist_trgm_ops);
-
 VACUUM ANALYZE users;
 ```
 
 <!-- plan -->
 ```sql
-select count(username) from users where lower(username) like '%watt%';
+select * from users where lower(username) like '%watt%';
 ```
+
+One big downside of a GIN (or GIST) index is that they typically consume far more
+disk space than a B-tree index.
+
+<!-- disk -->
+
+We can see here that for a simple table with 720kb of data, the GIN index is about
+40% larger than the table itself, and is about double the size of the B-tree index
+on the `username` column.

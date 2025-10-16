@@ -18,6 +18,7 @@ from scripts.mermaid import render_schema_mermaid
 from scripts.sql import exec_sql_block
 from scripts.table import render_html_table, escape_html
 from scripts.plan import render_explain_plan
+from scripts.disk import render_disk_treemap
 
 ROOT = Path(__file__).resolve().parents[1]
 DEMOS_DIR = ROOT / "demos"
@@ -33,6 +34,7 @@ CHART_DIRECTIVE_RE = re.compile(r"<!--\s*chart:(bar|line|pie)\s+x=(\w+)\s+y=(\w+
 SCHEMA_DIAGRAM_DIRECTIVE_RE = re.compile(r"<!--\s*schemadiagram\s*-->", re.IGNORECASE)
 FAKESEED_DIRECTIVE_RE = re.compile(r"<!--\s*fakeseed\s*-->", re.IGNORECASE)
 PLAN_DIRECTIVE_RE = re.compile(r"<!--\s*plan\s*-->", re.IGNORECASE)
+DISK_DIRECTIVE_RE = re.compile(r"<!--\s*disk\s*-->", re.IGNORECASE)
 
 
 def ensure_postgres_is_up(timeout_seconds: int = 90) -> None:
@@ -183,6 +185,7 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
             schema_diagram = False
             fakeseed = False
             plan = False
+            disk = False
             if prev_nonempty_line:
                 pl = prev_nonempty_line.strip()
                 mdir = CHART_DIRECTIVE_RE.match(pl)
@@ -199,6 +202,8 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
                     fakeseed = True
                 if PLAN_DIRECTIVE_RE.match(pl):
                     plan = True
+                if DISK_DIRECTIVE_RE.match(pl):
+                    disk = True
             # collect code block
             i += 1
             code_lines = []
@@ -219,12 +224,14 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
                         if offline:
                             snippets.append("> (Offline build: plan not generated)\n")
                         else:
-                            print(f"Executing explain plan block in {fp} against {dbname}: {block_text.splitlines()[0]}")
+                            preview = (block_text.splitlines()[0] if block_text.splitlines() else "<empty>")
+                            print(f"Executing explain plan block in {fp} against {dbname}: {preview}")
                             plan_html = render_explain_plan(dbname, block_text)
                             if plan_html:
                                 snippets.append(plan_html)
                     else:
-                        print(f"Executing SQL block in {fp} against {dbname}: {block_text.splitlines()[0]}")
+                        preview = (block_text.splitlines()[0] if block_text.splitlines() else "<empty>")
+                        print(f"Executing SQL block in {fp} against {dbname}: {preview}")
                         results = exec_sql_block(dbname, block_text, offline=offline)
                         # tables
                         for (cols, rows) in results:
@@ -242,6 +249,14 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
                                 diag_html = render_schema_mermaid(dbname)
                                 if diag_html:
                                     snippets.append(diag_html)
+                        # disk treemap if requested (uses current DB)
+                        if disk:
+                            if offline:
+                                snippets.append("> (Offline build: disk usage not generated)\n")
+                            else:
+                                treemap_html = render_disk_treemap(dbname)
+                                if treemap_html:
+                                    snippets.append(treemap_html)
                     # wrap snippets if any
                     if snippets:
                         out_parts.append("\n<details open><summary>Output</summary>\n")
@@ -257,11 +272,48 @@ def process_markdown_file(fp: Path, dbname: str, offline: bool = False) -> str:
                         out_parts.append("\n<details open><summary>Output</summary>\n")
                         out_parts.append(msg)
                         out_parts.append("\n</details>\n")
+                else:
+                    # Even if not SQL, allow disk/schema directives to inject output
+                    if schema_diagram or disk:
+                        snippets: List[str] = []
+                        if schema_diagram:
+                            if offline:
+                                snippets.append("> (Offline build: schema diagram not generated)\n")
+                            else:
+                                diag_html = render_schema_mermaid(dbname)
+                                if diag_html:
+                                    snippets.append(diag_html)
+                        if disk:
+                            if offline:
+                                snippets.append("> (Offline build: disk usage not generated)\n")
+                            else:
+                                treemap_html = render_disk_treemap(dbname)
+                                if treemap_html:
+                                    snippets.append(treemap_html)
+                        if snippets:
+                            out_parts.append("\n<details open><summary>Output</summary>\n")
+                            out_parts.extend(snippets)
+                            out_parts.append("\n</details>\n")
             except Exception as e:
                 out_parts.append(f"\n> Error executing block: `{escape_html(str(e))}`\n")
             prev_nonempty_line = ""  # reset after a block
         else:
             out_parts.append(line)
+            # Standalone disk directive: render immediately unless next line is a code fence (to avoid double-render)
+            if DISK_DIRECTIVE_RE.match(line.strip()):
+                next_is_fence = (i + 1 < len(lines)) and CODE_FENCE_START_RE.match(lines[i + 1]) is not None
+                if not next_is_fence:
+                    try:
+                        if offline:
+                            out_parts.append("\n> (Offline build: disk usage not generated)\n")
+                        else:
+                            treemap_html = render_disk_treemap(dbname)
+                            if treemap_html:
+                                out_parts.append("\n<details open><summary>Output</summary>\n")
+                                out_parts.append(treemap_html)
+                                out_parts.append("\n</details>\n")
+                    except Exception as e:
+                        out_parts.append(f"\n> Error executing directive: `{escape_html(str(e))}`\n")
             if line.strip():
                 prev_nonempty_line = line
             i += 1
@@ -414,4 +466,3 @@ if __name__ == "__main__":
         print("Building site...")
         build_site(offline=False)
         print(f"Done. Site at {SITE_DIR}")
-
