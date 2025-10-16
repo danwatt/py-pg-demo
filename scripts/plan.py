@@ -50,15 +50,51 @@ def _node_label(n: Dict[str, Any]) -> str:
 def _build_flowchart(plan_root: Dict[str, Any], orientation: str = "LR") -> str:
     # Depth-first traversal to build nodes and edges
     direction = orientation if orientation in {"TB", "TD", "LR", "RL"} else "TB"
-    lines: List[str] = [f"flowchart {direction}"]
+    lines: List[str] = [
+        "---",
+        "config:",
+        "  look: neo",
+        "  theme: neo",
+        "---",
+        f"flowchart {direction}"
+    ]
     counter = [0]
+
+    # Track node "Total Cost" and per-link styles in traversal order
+    node_cost: Dict[str, float] = {}
+    link_styles: List[str] = []
 
     def next_id() -> str:
         counter[0] += 1
         return f"n{counter[0]}"
 
+    def parse_cost(n: Dict[str, Any]) -> float:
+        v = n.get("Total Cost")
+        try:
+            return float(v) if v is not None else 0.0
+        except Exception:
+            return 0.0
+
+    def edge_width_px(parent_cost: float, child_cost: float) -> int:
+        # Map child/base (root) cost ratio to a stroke width in px
+        MIN_W, MAX_W = 1, 10
+        if parent_cost <= 0 or child_cost <= 0:
+            return MIN_W
+        ratio = child_cost / parent_cost
+        ratio = max(ratio, 0)
+        ratio = min(ratio, 1)
+        width = round(MIN_W + ratio * (MAX_W - MIN_W))
+        width = max(width, MIN_W)
+        width = min(width, MAX_W)
+        return int(width)
+
+    # Capture root plan cost once; use as baseline for all edge thickness calculations
+    root_cost = parse_cost(plan_root)
+
     def walk(n: Dict[str, Any]) -> Tuple[str, List[str]]:
         node_id = next_id()
+        # Record node cost for later edge scaling
+        node_cost[node_id] = parse_cost(n)
         label = _node_label(n)
         node_line = f'{node_id}["{label}"]'
         out_lines = [node_line]
@@ -66,10 +102,18 @@ def _build_flowchart(plan_root: Dict[str, Any], orientation: str = "LR") -> str:
             child_id, child_lines = walk(ch)
             out_lines.extend(child_lines)
             out_lines.append(f"{node_id} --> {child_id}")
+            # Determine link style index by current number of links emitted
+            idx = len(link_styles)
+            # Use root_cost as baseline to make thickness relative to total plan cost
+            width = edge_width_px(root_cost, node_cost.get(child_id, 0.0))
+            link_styles.append(f"linkStyle {idx} stroke-width:{width}px")
         return node_id, out_lines
 
     _, body_lines = walk(plan_root)
     lines.extend(body_lines)
+    # Append per-link style directives after edges; Mermaid counts links in declaration order
+    if link_styles:
+        lines.extend(link_styles)
     return "\n".join(lines)
 
 

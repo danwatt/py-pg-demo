@@ -231,6 +231,13 @@ def build_site(offline: bool = False) -> None:
         md_files = _list_markdown_files(demo_dir)
         if not md_files:
             continue
+
+        other_files = [p for p in demo_dir.iterdir() if p.is_file() and p.suffix.lower() not in ('.md', '.markdown')]
+        for fp in other_files:
+            out_rel = Path("demos") / demo_dir.name / fp.name
+            out_path = STAGING_DIR / out_rel
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(fp, out_path)
         demo_title = _slug_to_title(demo_dir.name)
         demo_nav_entries: List[Dict[str, str]] = []
         index_lines.append(f"\n## {demo_title}\n\n")

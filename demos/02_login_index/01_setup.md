@@ -1,5 +1,34 @@
 # Setup schema
 
+## Backstory
+
+There was a legacy system that I once had to maintain that dealt with user access.
+
+This system was very much of the "if it isn't broken, don't fix it" variety. It
+had almost 0 automated tests for it, and getting QA time to manually test it was 
+difficult. Unless we had some feature that was going to give us a notable ROI, we
+basically just let it be.
+
+This system almost had the most expensive database in the company. Accounting for
+read replicas and the like, it cost low six-figures annually.
+
+One of my roles was to monitor the system as a whole - the code, 3rd part systems,
+and in this case, the database. And, I noticed that there was one query that
+ran very frequently, and during peak times was responsible for over half of the
+load on the database.
+
+The query itself was not too terribly complex or expensive when run on its own.
+The typical response time was well under 100ms. But, as activity was closely
+correlated to peak user demand throughout the day, that query time started to add
+up during peak times.
+
+Below is a rough approximation of the database schema, with just the relevant
+columns.
+
+Every time a user logged in, a `session` record would be created. The user's `device`
+would be tracked with a unique ID for that device, and we also tracked some data such
+as the user agent.
+
 <!-- schemadiagram -->
 ```sql
 
@@ -21,6 +50,7 @@ CREATE table device_types (
 
 CREATE table devices (
     id serial primary key,
+    -- TODO: Device ID, though its actually not really that relevant for this demo
     user_id int NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     device_type_id int NOT NULL REFERENCES device_types(id) ON DELETE CASCADE,
     created_at timestamp NOT NULL DEFAULT now()
@@ -28,6 +58,7 @@ CREATE table devices (
 
 CREATE table sessions (
     id bigserial primary key,
+    user_id int not null references users(id) on delete cascade,
     device_id int NOT NULL REFERENCES devices(id) ON DELETE CASCADE,
     user_agent varchar NOT NULL,
     created_at timestamp NOT NULL DEFAULT now()
@@ -111,24 +142,36 @@ select count(distinct user_id) from devices;
 SELECT setseed(0.42);
 
 -- Every device has at least one session
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id order by random();
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id order by random();
 
--- Some devices have multiple sessions
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+-- Some have more than one
 
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
 
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
 
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
 
-with u as (select d.id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
-INSERT INTO sessions(device_id, user_agent, created_at) SELECT u.id, user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+
+with u as (select d.id as device_id,d.user_id, now() - (random() * INTERVAL '365 days') as last_seen, mod(d.id + floor(random()*100)::bigint, (select count(*) from temp_user_agents)) as ua_id from devices d)
+INSERT INTO sessions(device_id, user_id, user_agent, created_at) SELECT device_id, user_id,user_agent, last_seen FROM u join temp_user_agents tua on u.ua_id = tua.id  where random() < 0.8 order by random();
+
+
 ```
 
 ```sql
