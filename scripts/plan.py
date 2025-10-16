@@ -1,12 +1,13 @@
 # filepath: c:\Users\danwa\PycharmProjects\pg-demo\scripts\plan.py
 import json
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Optional
 
 import psycopg2  # switched from pg8000 to psycopg2
 
 from scripts.config import PG_USER, PG_PASSWORD, PG_HOST, PG_PORT
 from scripts.sql import split_sql_statements
+from scripts.table import render_html_table
 
 
 def _format_float(v: Any) -> str:
@@ -117,7 +118,7 @@ def _build_flowchart(plan_root: Dict[str, Any], orientation: str = "LR") -> str:
     return "\n".join(lines)
 
 
-def _render_tabs(flowchart_diagram: str, plan_json_pretty: str) -> str:
+def _render_tabs(flowchart_diagram: str, plan_json_pretty: str, results_html: Optional[str] = None) -> str:
     # Minimal tabs CSS/JS, no external deps
     style = (
         "<style>"
@@ -138,16 +139,28 @@ def _render_tabs(flowchart_diagram: str, plan_json_pretty: str) -> str:
     raw_panel = (
         f"<div class=\"tab-panel\"><pre>{plan_json_pretty}</pre></div>"
     )
-    tabs = (
-        f"<div class=\"plan-tabs\">{style}"
+    results_panel = (
+        f"<div class=\"tab-panel\">{results_html}</div>" if results_html else ""
+    )
+    # Build tabs and panels conditionally
+    tab_bar = (
         f"<div class=\"tab-bar\">"
         f"  <div class=\"tab active\" data-tab=\"visual\">Visual</div>"
+        + (f"  <div class=\"tab\" data-tab=\"results\">Results</div>" if results_html else "") +
         f"  <div class=\"tab\" data-tab=\"raw\">Raw (JSON)</div>"
         f"</div>"
+    )
+    panels = (
         f"<div class=\"panels\">"
         f"  <div class=\"panel visual\">{visual_panel}</div>"
+        + (f"  <div class=\"panel results\">{results_panel}</div>" if results_html else "") +
         f"  <div class=\"panel raw\">{raw_panel}</div>"
         f"</div>"
+    )
+    tabs = (
+        f"<div class=\"plan-tabs\">{style}"
+        f"{tab_bar}"
+        f"{panels}"
         f"</div>"
         f"<script src=\"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js\"></script>"
         f"<script>(function(){{\n"
@@ -158,12 +171,15 @@ def _render_tabs(flowchart_diagram: str, plan_json_pretty: str) -> str:
         f"  if (!root) root = document.querySelector('.plan-tabs');\n"
         f"  if (root) {{\n"
         f"    var tabs = root.querySelectorAll('.tab-bar .tab');\n"
-        f"    var visual = root.querySelector('.panel.visual .tab-panel');\n"
-        f"    var raw = root.querySelector('.panel.raw .tab-panel');\n"
+        f"    var panels = {{}};\n"
+        f"    ['visual','results','raw'].forEach(function(name){{\n"
+        f"      var p = root.querySelector('.panel.'+name+' .tab-panel');\n"
+        f"      if (p) panels[name] = p;\n"
+        f"    }});\n"
         f"    function activate(which) {{\n"
         f"      tabs.forEach(function(t){{ t.classList.toggle('active', t.dataset.tab===which); }});\n"
-        f"      if (which==='visual') {{ visual.classList.add('active'); raw.classList.remove('active'); try {{ mermaid.init(); }} catch(e) {{}} }}\n"
-        f"      else {{ raw.classList.add('active'); visual.classList.remove('active'); }}\n"
+        f"      Object.keys(panels).forEach(function(name){{ panels[name].classList.toggle('active', name===which); }});\n"
+        f"      if (which==='visual') {{ try {{ mermaid.init(); }} catch(e) {{}} }}\n"
         f"    }}\n"
         f"    tabs.forEach(function(t){{ t.addEventListener('click', function(){{ activate(t.dataset.tab); }}); }});\n"
         f"  }}\n"
@@ -177,13 +193,16 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
     stmts = split_sql_statements(sql_text)
     if not stmts:
         return ""
-    stmt = stmts[0].strip().rstrip(';')
+    original_stmt = stmts[0].strip().rstrip(';')
 
     explain_re = re.compile(r"^\s*explain(\s*\((?P<opts>[^)]*)\))?\s+(?P<body>.*)$", re.IGNORECASE | re.DOTALL)
-    m = explain_re.match(stmt)
+    m = explain_re.match(original_stmt)
+    results_stmt = None
     if m:
         opts = m.group('opts') or ''
-        body = m.group('body') or ''
+        body = (m.group('body') or '').strip()
+        # Keep a copy of the body for results if it's a row-returning statement
+        results_stmt = body
         if 'format json' not in (opts or '').lower():
             opts = (opts + ', FORMAT JSON') if opts else 'FORMAT JSON'
         # Add verbosity and costs unless already present
@@ -197,14 +216,34 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
             opts = opts + ', ' + ', '.join(add_opts)
         stmt = f"EXPLAIN ({opts}) {body}"
     else:
-        stmt = f"EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON) {stmt}"
+        results_stmt = original_stmt
+        stmt = f"EXPLAIN (ANALYZE, COSTS, VERBOSE, BUFFERS, FORMAT JSON) {original_stmt}"
+
+    # Decide if we should attempt to fetch a result set (SELECT/WITH/VALUES)
+    results_html: Optional[str] = None
+    def is_row_returning(s: Optional[str]) -> bool:
+        if not s:
+            return False
+        return re.match(r"^\s*(select|with|values)\b", s, re.IGNORECASE) is not None
 
     conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
         conn.autocommit = True
         cur = conn.cursor()
+        # First, run EXPLAIN ... FORMAT JSON
         cur.execute(stmt)
         row = cur.fetchone()
+        # Optionally, run the original row-returning statement to fetch results
+        if is_row_returning(results_stmt):
+            try:
+                cur.execute(results_stmt)
+                if cur.description:
+                    cols = [d[0] for d in cur.description]
+                    rows = cur.fetchall()
+                    results_html = render_html_table(cols, rows)
+            except Exception:
+                # If the results query fails, leave the results tab empty
+                results_html = None
         cur.close()
     finally:
         conn.close()
@@ -227,6 +266,6 @@ def render_explain_plan(dbname: str, sql_text: str) -> str:
             return f"<pre class=\"explain-text\">{json.dumps(plan_json, indent=2)}</pre>"
         flow = _build_flowchart(plan_root, orientation="TB")
         pretty = json.dumps(plan_json, indent=2)
-        return _render_tabs(flow, pretty)
+        return _render_tabs(flow, pretty, results_html)
     except Exception:
         return f"<pre class=\"explain-text\">{json.dumps(plan_json, indent=2)}</pre>"

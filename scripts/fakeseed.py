@@ -25,12 +25,22 @@ def _generate_value(spec: Any, fk: Faker, conn, cache: Dict[str, List[Any]]):
     if "faker" in spec:
         provider = spec.get("faker")
         kwargs = spec.get("kwargs") or {}
-        fn = getattr(fk, provider, None)
+        # Support unique generation via Faker's unique proxy
+        use_unique = bool(spec.get("unique"))
+        base = fk.unique if use_unique else fk
+        fn = getattr(base, provider, None)
         if callable(fn):
             try:
-                return fn(**kwargs)
+                return fn(**kwargs) if kwargs else fn()
             except Exception:
-                return fn()
+                # For unique providers, propagate the error (likely uniqueness exhaustion)
+                if use_unique:
+                    raise
+                # Fallback for non-unique: try calling without kwargs
+                try:
+                    return fn()
+                except Exception:
+                    return None
         # fallback: unknown provider -> None
         return None
     # ref: table/column or raw sql
@@ -78,6 +88,12 @@ def seed_fake_data(dbname: str, yaml_text: str, offline: bool = False) -> str:
     if isinstance(seed, int):
         Faker.seed(seed)
         random.seed(seed)
+    # Ensure unique tracking starts clean for this run
+    try:
+        fk.unique.clear()
+    except Exception:
+        # If unique proxy isn't set up or clear isn't available, ignore
+        pass
 
     conn = psycopg2.connect(user=PG_USER, password=PG_PASSWORD, host=PG_HOST, port=PG_PORT, dbname=dbname)
     try:
@@ -112,8 +128,8 @@ def seed_fake_data(dbname: str, yaml_text: str, offline: bool = False) -> str:
         cur.close()
         conn.commit()
         return f"> Inserted {rows} fake row(s) into {table}.\n"
-    except Exception:
+    except Exception as e:
         conn.rollback()
-        raise
+        return f"> Error inserting fake row(s) into {table}: {e}\n>"
     finally:
         conn.close()
