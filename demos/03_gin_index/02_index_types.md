@@ -20,3 +20,4 @@ And, if we want to be case-insensitive, we can do so as well:
 ```sql
 select * from users where lower(username)=lower('WDavis@hotmail.com');
 ```
+
